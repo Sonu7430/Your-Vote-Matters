@@ -1,16 +1,25 @@
-# React + Vite
+# Your Vote Matters: Election Assistant
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An interactive and easy-to-follow web application designed to help users understand the election process, timelines, and necessary steps to vote.
 
-Currently, two official plugins are available:
+## Features
+- **Interactive Timeline**: A step-by-step visual guide to the election phases.
+- **Election Phase Durations**: A data-driven chart visualizing the time commitment for each stage.
+- **AI Election Assistant**: A Gemini-powered chatbot to answer your specific voting queries.
+- **FAQ Section**: Quick answers to common voter questions.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Tech Stack
+- **Frontend**: React + Vite
+- **Styling**: Vanilla CSS (Modern, Responsive, Dark Mode)
+- **Charts**: Recharts
+- **AI Integration**: Google Gemini API (@google/generative-ai)
+- **Deployment**: Google Cloud Run (Containerized)
 
-## React Compiler
+## Local Development
+1. Clone the repository.
+2. Run `npm install`.
+3. Create a `.env.local` file and add your `VITE_GEMINI_API_KEY`.
+4. Run `npm run dev`.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Deployment
+This project is configured for one-click deployment to Google Cloud Run using the included `Dockerfile` and `nginx.conf`.
