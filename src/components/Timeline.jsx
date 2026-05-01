@@ -1,50 +1,98 @@
 import React, { useState } from 'react';
-import { CheckCircle2, ChevronRight, Circle } from 'lucide-react';
+import { CheckCircle2, ChevronRight, Circle, MessageSquare } from 'lucide-react';
 import './Timeline.css';
 
 const electionSteps = [
   {
     id: 1,
-    title: 'Voter Registration',
-    date: 'Up to 30 days before election',
-    description: 'Ensure you are registered to vote at your current address. Check your state\'s specific deadlines.',
-    details: 'You can register online, by mail, or in person. Requirements vary by state, but generally require proof of identity and residency.'
+    title: 'Phase 1: Voter Readiness',
+    date: 'Months before Election',
+    description: 'Bite: The foundation of voting is ensuring you are eligible and registered.',
+    details: 'Snack:\n• Think of the voter roll as the guest list for a party—you need to be on it to get in.\n• Check your registration status early.\n• Update your address if you have moved.',
+    checklist: [
+      { id: 'reg', text: 'Check registration status', completed: false },
+      { id: 'addr', text: 'Update address if moved', completed: false },
+      { id: 'dead', text: 'Mark registration deadline', completed: false }
+    ]
   },
   {
     id: 2,
-    title: 'Research Candidates & Issues',
+    title: 'Phase 2: The Campaign Trail',
     date: 'Ongoing',
-    description: 'Learn about the candidates on your ballot and the ballot measures you will be voting on.',
-    details: 'Use non-partisan resources like Vote411 or Ballotpedia to view your sample ballot and read up on candidate platforms.'
+    description: 'Bite: Candidates share their platforms and compete for party nominations.',
+    details: 'Snack:\n• Primary elections determine party representatives.\n• Delegates formally nominate candidates at conventions.\n• Research candidates using non-partisan resources.',
+    checklist: [
+      { id: 'prim', text: 'Identify primary dates', completed: false },
+      { id: 'res', text: 'Read non-partisan guides', completed: false },
+      { id: 'plat', text: 'Compare candidate platforms', completed: false }
+    ]
   },
   {
     id: 3,
-    title: 'Make a Plan to Vote',
-    date: '1-2 weeks before election',
-    description: 'Decide how, when, and where you will vote. Will you vote early, by mail, or on Election Day?',
-    details: 'Check your polling location, figure out your transportation, and verify what ID you need to bring, if any.'
+    title: 'Phase 3: Casting the Ballot',
+    date: 'Weeks up to Election Day',
+    description: 'Bite: Voters cast their ballots through various methods.',
+    details: 'Snack:\n• Early voting and mail-in options provide flexibility.\n• Follow mail-in instructions carefully.\n• Locate your polling station.',
+    checklist: [
+      { id: 'plan', text: 'Decide how to vote', completed: false },
+      { id: 'poll', text: 'Find polling location', completed: false },
+      { id: 'id', text: 'Check required voter ID', completed: false }
+    ]
   },
   {
     id: 4,
-    title: 'Early Voting / Mail-in',
-    date: 'Varies by state (usually weeks before)',
-    description: 'If available in your state, vote early in person or return your mail-in ballot.',
-    details: 'Make sure to follow all instructions on mail-in ballots carefully (e.g., signing the envelope) and return it by the deadline.'
+    title: 'Phase 4: The Count',
+    date: 'Election Night & Beyond',
+    description: 'Bite: Election officials carefully tabulate the votes.',
+    details: 'Snack:\n• Tabulation is the process of counting ballots.\n• Canvassing verifies every valid vote.\n• Results take time to be official.',
+    checklist: [
+      { id: 'track', text: 'Follow official count', completed: false },
+      { id: 'ver', text: 'Understand verification steps', completed: false }
+    ]
   },
   {
     id: 5,
-    title: 'Election Day',
-    date: 'First Tuesday in November',
-    description: 'Go to your assigned polling place and cast your ballot.',
-    details: 'Poll hours vary by state. As long as you are in line before the polls close, you have the right to vote.'
+    title: 'Phase 5: Certification',
+    date: 'Weeks after Election',
+    description: 'Bite: Results become official after a final review.',
+    details: 'Snack:\n• Audits double-check accuracy.\n• Official certification concludes the cycle.',
+    checklist: [
+      { id: 'cert', text: 'View certified results', completed: false },
+      { id: 'swear', text: 'Identify swearing-in dates', completed: false }
+    ]
   }
 ];
 
-const Timeline = () => {
+const Timeline = ({ onDiscuss }) => {
   const [activeStep, setActiveStep] = useState(0);
+  const [completedItems, setCompletedItems] = useState({});
+
+  const toggleItem = (stepId, itemId) => {
+    setCompletedItems(prev => ({
+      ...prev,
+      [`${stepId}-${itemId}`]: !prev[`${stepId}-${itemId}`]
+    }));
+  };
+
+  const calculateProgress = () => {
+    const total = electionSteps.reduce((acc, step) => acc + step.checklist.length, 0);
+    const completed = Object.values(completedItems).filter(Boolean).length;
+    return Math.round((completed / total) * 100);
+  };
+
+  const progress = calculateProgress();
 
   return (
     <div className="timeline-container glass-panel">
+      <div className="roadmap-header">
+        <div className="progress-info">
+          <h3>Your Voter Roadmap</h3>
+          <span>{progress}% Ready to Vote</span>
+        </div>
+        <div className="progress-bar-bg">
+          <div className="progress-bar-fill" style={{ width: `${progress}%` }}></div>
+        </div>
+      </div>
       <div className="timeline-layout">
         
         {/* Left Side: Timeline Steps */}
@@ -91,11 +139,31 @@ const Timeline = () => {
             </div>
             <p className="detail-description">{electionSteps[activeStep].description}</p>
             <div className="detail-deepdive">
-              <h4>What you need to know:</h4>
-              <p>{electionSteps[activeStep].details}</p>
+              <h4>Phase Checklist:</h4>
+              <div className="checklist-container">
+                {electionSteps[activeStep].checklist.map(item => (
+                  <div 
+                    key={item.id} 
+                    className={`checklist-item ${completedItems[`${electionSteps[activeStep].id}-${item.id}`] ? 'checked' : ''}`}
+                    onClick={() => toggleItem(electionSteps[activeStep].id, item.id)}
+                  >
+                    <div className="checkbox">
+                      {completedItems[`${electionSteps[activeStep].id}-${item.id}`] && <CheckCircle2 size={16} />}
+                    </div>
+                    <span>{item.text}</span>
+                  </div>
+                ))}
+              </div>
             </div>
             
             <div className="detail-actions">
+              <button 
+                className="btn-discuss"
+                onClick={() => onDiscuss(`Tell me more about ${electionSteps[activeStep].title}. I'm curious about the specific procedures involved.`)}
+              >
+                <MessageSquare size={18} />
+                Ask Assistant
+              </button>
               <button 
                 className="btn-next"
                 onClick={() => setActiveStep(prev => Math.min(prev + 1, electionSteps.length - 1))}

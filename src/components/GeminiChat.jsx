@@ -3,15 +3,23 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import { Send, Bot, User, Key, Loader2, Sparkles } from 'lucide-react';
 import './GeminiChat.css';
 
-const GeminiChat = () => {
+const GeminiChat = ({ initialInput }) => {
   const [apiKey, setApiKey] = useState(import.meta.env.VITE_GEMINI_API_KEY || '');
   const [isKeySet, setIsKeySet] = useState(!!import.meta.env.VITE_GEMINI_API_KEY);
   const [messages, setMessages] = useState([
-    { role: 'model', text: 'Hi! I am your Election Assistant AI. Ask me anything about the voting process, candidate research, or election deadlines!' }
+    { role: 'model', text: 'Hi! I am the Election Navigator, your interactive guide through the election process. Are you interested in Phase 1: Voter Readiness, or would you like to explore another part of the process?' }
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
+
+  const suggestedTopics = [
+    "How do I check if I'm registered?",
+    "What's the role of delegates?",
+    "How are mail-in ballots verified?",
+    "What is logic and accuracy testing?",
+    "Tell me about the certification process."
+  ];
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -20,6 +28,12 @@ const GeminiChat = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  useEffect(() => {
+    if (initialInput) {
+      setInput(initialInput);
+    }
+  }, [initialInput]);
 
   const handleSetKey = (e) => {
     e.preventDefault();
@@ -41,7 +55,22 @@ const GeminiChat = () => {
       const genAI = new GoogleGenerativeAI(apiKey);
       const model = genAI.getGenerativeModel({ 
         model: 'gemini-2.5-flash',
-        systemInstruction: "You are a helpful and neutral Election Assistant AI. You help users understand the election process, voting laws, and civic duties. You do not show political bias or endorse candidates. Keep your answers concise and easy to understand."
+        systemInstruction: `You are the Election Navigator, a non-partisan, highly accessible, and interactive educational assistant. Your goal is to help citizens understand the complexities of the election process, from voter registration to the final certification of results. 
+        Core Requirements:
+        - Strict Neutrality: Never express political opinions or leanings. Use neutral language.
+        - Accuracy First: Always direct users to official sources (like .gov or official election commission websites) for specific local deadlines.
+        - The "Bite, Snack, Meal" Method: 
+          - Bite: Start with a 1-sentence summary.
+          - Snack: Follow with 3-4 bullet points for more detail.
+          - Meal: Offer a deep dive if the user asks for "more details."
+        - Interactivity: End every response with a clarifying question or an invitation to explore a specific step.
+        - Tone & Style: Supportive & Encouraging, Concise, Visual Descriptions (use simple analogies).
+        Structure of Knowledge Base:
+        Phase 1: Voter Readiness
+        Phase 2: The Campaign Trail
+        Phase 3: Casting the Ballot
+        Phase 4: The Count
+        Phase 5: Certification`
       });
       
       const result = await model.generateContent(userMsg);
@@ -121,6 +150,18 @@ const GeminiChat = () => {
           </div>
         )}
         <div ref={messagesEndRef} />
+      </div>
+
+      <div className="chat-suggestions">
+        {suggestedTopics.map((topic, i) => (
+          <button 
+            key={i} 
+            className="suggestion-chip"
+            onClick={() => setInput(topic)}
+          >
+            {topic}
+          </button>
+        ))}
       </div>
 
       <form onSubmit={handleSendMessage} className="chat-input-form">
