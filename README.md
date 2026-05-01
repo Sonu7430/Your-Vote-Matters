@@ -1,4 +1,4 @@
-# Your Vote Matters: Election Assistant
+# VoteVidya: Your Vote Matters
 
 An interactive and easy-to-follow web application designed to help users understand the election process, timelines, and necessary steps to vote.
 
@@ -7,6 +7,8 @@ An interactive and easy-to-follow web application designed to help users underst
 - **Election Phase Durations**: A data-driven chart visualizing the time commitment for each stage.
 - **AI Election Assistant**: A Gemini-powered chatbot to answer your specific voting queries.
 - **FAQ Section**: Quick answers to common voter questions.
+- **Interactive Roadmap**: Gamified voting journey with progress tracking.
+- **3D Flipcards**: Learn election terminology with interactive cards.
 
 ## Tech Stack
 - **Frontend**: React + Vite
